@@ -31,16 +31,13 @@ static int	validate_args(int argc, char **argv)
 
 static void	send_char(int pid, unsigned char c)
 {
-	int	i;
+	const int	signals[] = {SIGUSR2, SIGUSR1};
+	int			i;
 
 	i = 7;
 	while (0 <= i)
 	{
-		if (c & (1 << i))
-			kill(pid, SIGUSR1);
-		else
-			kill(pid, SIGUSR2);
-		i--;
+		kill(pid, signals[!!(c & (1 << i--))]);
 		usleep(CLIENT_USLEEP);
 	}
 }
