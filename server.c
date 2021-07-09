@@ -1,25 +1,43 @@
 #include "minitalk.h"
 
-void	put_pid(void)
+static void	put_pid(void)
 {
 	ft_putstr_fd("PID: ", STDOUT_FILENO);
 	ft_putnbr_fd(getpid(), STDOUT_FILENO);
 	ft_putchar_fd('\n', STDOUT_FILENO);
 }
 
-void	signal_handler(int signo, siginfo_t *info, void *context)
+static void	signal_handler(int signo, siginfo_t *info, void *context)
 {
+	static unsigned char	c = 0;
+	static int				i = 7;
+
 	(void)context;
-	if (signo == SIGUSR1)
+	(void)info;
+	c |= ((signo == SIGUSR1) << i);
+	if (--i == -1)
 	{
-		ft_putnbr_fd(info->si_pid, STDOUT_FILENO);
-		ft_putendl_fd(" user1", STDOUT_FILENO);
+		if (c != '\0')
+			write(STDOUT_FILENO, &c, 1);
+		else
+			write(STDOUT_FILENO, "\n", 1);
+		c = 0;
+		i = 7;
 	}
-	else if (signo == SIGUSR2)
-	{
-		ft_putnbr_fd(info->si_pid, STDOUT_FILENO);
-		ft_putendl_fd(" user2", STDOUT_FILENO);
-	}
+	// if (signo == SIGUSR1)
+	// {
+	// 	ft_putnbr_fd(info->si_pid, STDOUT_FILENO);
+	// 	ft_putendl_fd(" user1/", STDOUT_FILENO);
+	// 	ft_putnbr_fd(i, STDOUT_FILENO);
+	// 	ft_putendl_fd("", STDOUT_FILENO);
+	// }
+	// else if (signo == SIGUSR2)
+	// {
+	// 	ft_putnbr_fd(info->si_pid, STDOUT_FILENO);
+	// 	ft_putendl_fd(" user2/", STDOUT_FILENO);
+	// 	ft_putnbr_fd(i, STDOUT_FILENO);
+	// 	ft_putendl_fd("", STDOUT_FILENO);
+	// }
 }
 
 int	main(void)

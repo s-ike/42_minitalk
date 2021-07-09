@@ -21,7 +21,7 @@ C_GREEN		:= "\x1b[32m"
 
 all:		$(NAME)
 
-$(NAME):	server ##client
+$(NAME):	server client
 			@echo $(C_GREEN)"=== Make Done ==="
 
 $(LIBPATH):
