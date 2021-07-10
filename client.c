@@ -29,43 +29,63 @@ static int	validate_args(int argc, char **argv)
 	return (true);
 }
 
-static void	send_char(int pid, unsigned char c)
+static int	send_str(pid_t pid, const char *s)
 {
-	const int	signals[] = {SIGUSR2, SIGUSR1};
-	int			i;
+	const int		signals[] = {SIGUSR2, SIGUSR1};
+	static char		*save_s;
+	static pid_t	save_p = 0;
+	static int		i = 7;
 
-	i = 7;
-	while (0 <= i)
+	if (s)
 	{
-		kill(pid, signals[!!(c & (1 << i--))]);
+		save_s = (char *)s;
+		save_p = pid;
+	}
+	if (0 <= i)
+	{
 		usleep(CLIENT_USLEEP);
+		if (kill(save_p, signals[!!(*save_s & (1 << i--))]) == 1)
+			return (false);
 	}
-}
-
-static void	send_str(int pid, const char *s)
-{
-	size_t	i;
-
-	i = 0;
-	while (s[i])
+	if (i < 0)
 	{
-		send_char(pid, s[i]);
-		i++;
-		if (s[i] == '\0')
-			send_char(pid, s[i]);
+		if (*save_s == '\0')
+			return (true);
+		i = 7;
+		save_s++;
 	}
+	return (true);
 }
-#include <stdio.h>
+
+static void	signal_handler(int signo)
+{
+	if (signo == SIGUSR1)
+		send_str(0, NULL);
+	if (signo == SIGUSR2)
+		exit(EXIT_SUCCESS);
+}
+
 int	main(int argc, char **argv)
 {
-	// int	argc = 3;
-	// char	*argv[] = {"./client", "66291", "a", NULL};
+	struct sigaction	act;
 
+	act.sa_handler = signal_handler;
+	sigemptyset(&act.sa_mask);
+	if (sigaction(SIGUSR1, &act, NULL) < 0)
+		return (EXIT_FAILURE);
+	if (sigaction(SIGUSR2, &act, NULL) < 0)
+		return (EXIT_FAILURE);
 	if (!validate_args(argc, argv))
 	{
-		ft_putendl_fd("Invalid argument", STDERR_FILENO);
+		ft_putendl_fd(MSG_EINVAL, STDERR_FILENO);
 		exit(EXIT_FAILURE);
 	}
-	send_str(ft_atoi(argv[1]), argv[2]);
+	if (send_str(ft_atoi(argv[1]), argv[2]) == false)
+	{
+		ft_putendl_fd(MSG_FAILED, STDERR_FILENO);
+		exit(EXIT_FAILURE);
+	}
+	while (1)
+		pause();
 	exit(EXIT_SUCCESS);
 }
