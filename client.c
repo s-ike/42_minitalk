@@ -24,7 +24,8 @@ static int	validate_args(int argc, char **argv)
 		return (false);
 	if (!is_pid_format(argv[1]))
 		return (false);
-	if (ft_strlen(argv[2]) == 0)
+	g_client_strlen = ft_strlen(argv[2]);
+	if (g_client_strlen == 0)
 		return (false);
 	return (true);
 }
@@ -44,7 +45,7 @@ static int	send_str(pid_t pid, const char *s)
 	if (0 <= i)
 	{
 		usleep(CLIENT_USLEEP);
-		if (kill(save_p, signals[!!(*save_s & (1 << i--))]) == 1)
+		if (kill(save_p, signals[!!(*save_s & (1 << i--))]) == -1)
 			return (false);
 	}
 	if (i < 0)
@@ -59,10 +60,31 @@ static int	send_str(pid_t pid, const char *s)
 
 static void	signal_handler(int signo)
 {
+	static uint64_t	cnt = 0;
+
+	if (signo == SIGUSR1 || signo == SIGUSR2)
+	{
+		ft_putstr_fd("\rACK: ", STDOUT_FILENO);
+		ft_putnbr_fd(++cnt, STDOUT_FILENO);
+	}
 	if (signo == SIGUSR1)
 		send_str(0, NULL);
 	if (signo == SIGUSR2)
+	{
+		write(STDOUT_FILENO, "\n", 1);
+		if ((g_client_strlen + 1ULL) * 8ULL == cnt)
+		{
+			ft_putstr_fd(CLR_GREEN, STDOUT_FILENO);
+			ft_putendl_fd("SUCCESS", STDOUT_FILENO);
+		}
+		else
+		{
+			ft_putstr_fd(CLR_RED, STDOUT_FILENO);
+			ft_putendl_fd("FAILED", STDOUT_FILENO);
+		}
+		ft_putstr_fd(CLR_RESET, STDOUT_FILENO);
 		exit(EXIT_SUCCESS);
+	}
 }
 
 int	main(int argc, char **argv)
