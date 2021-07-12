@@ -46,4 +46,4 @@ fclean:		clean
 
 re:			fclean $(NAME)
 
-.PHONY:		all clean fclean re server client init
+.PHONY:		all clean fclean re init
