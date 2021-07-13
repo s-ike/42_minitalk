@@ -93,10 +93,12 @@ int	main(int argc, char **argv)
 
 	act.sa_handler = signal_handler;
 	sigemptyset(&act.sa_mask);
-	if (sigaction(SIGUSR1, &act, NULL) < 0)
-		return (EXIT_FAILURE);
-	if (sigaction(SIGUSR2, &act, NULL) < 0)
-		return (EXIT_FAILURE);
+	if (sigaction(SIGUSR1, &act, NULL) < 0
+		|| sigaction(SIGUSR2, &act, NULL) < 0)
+	{
+		ft_putendl_fd(MSG_SIGACT_FAILED, STDERR_FILENO);
+		exit(EXIT_FAILURE);
+	}
 	if (!validate_args(argc, argv))
 	{
 		ft_putendl_fd(MSG_EINVAL, STDERR_FILENO);
@@ -104,7 +106,7 @@ int	main(int argc, char **argv)
 	}
 	if (send_str(ft_atoi(argv[1]), argv[2]) == false)
 	{
-		ft_putendl_fd(MSG_FAILED, STDERR_FILENO);
+		ft_putendl_fd(MSG_KILL_FAILED, STDERR_FILENO);
 		exit(EXIT_FAILURE);
 	}
 	while (1)

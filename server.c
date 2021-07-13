@@ -56,10 +56,12 @@ int	main(void)
 	sigemptyset(&act.sa_mask);
 	// sa_flagsにSA_SIGINFOを指定しsignalに関する詳細な情報siginfo_tを受け取る
 	act.sa_flags = SA_SIGINFO;
-	if (sigaction(SIGUSR1, &act, NULL) < 0)
-		return (EXIT_FAILURE);
-	if (sigaction(SIGUSR2, &act, NULL) < 0)
-		return (EXIT_FAILURE);
+	if (sigaction(SIGUSR1, &act, NULL) < 0
+		|| sigaction(SIGUSR2, &act, NULL) < 0)
+	{
+		ft_putendl_fd(MSG_SIGACT_FAILED, STDERR_FILENO);
+		exit(EXIT_FAILURE);
+	}
 	while (1)
 		pause();
 	exit(EXIT_SUCCESS);
