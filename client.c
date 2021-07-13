@@ -109,5 +109,5 @@ int	main(int argc, char **argv)
 	}
 	while (1)
 		pause();
-	exit(EXIT_SUCCESS);
+	exit(EXIT_FAILURE);
 }

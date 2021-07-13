@@ -5,7 +5,7 @@
 # include <stdbool.h>
 # include "libft/libft.h"
 
-# define CLIENT_USLEEP 20
+# define CLIENT_USLEEP 5
 # define MSG_EINVAL "Invalid argument"
 # define MSG_FAILED "kill failed"
 
