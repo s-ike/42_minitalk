@@ -14,7 +14,7 @@ static void	put_pid(pid_t pid, bool is_server)
 	}
 	ft_putnbr_fd(pid, STDOUT_FILENO);
 	ft_putstr_fd(CLR_RESET, STDOUT_FILENO);
-	ft_putchar_fd('\n', STDOUT_FILENO);
+	write(STDOUT_FILENO, "\n", 1);
 }
 
 static void	signal_handler(int signo, siginfo_t *info, void *context)

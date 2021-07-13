@@ -3,7 +3,8 @@
 
 # include <signal.h>
 # include <stdbool.h>
-# include "libft/libft.h"
+# include <unistd.h>
+# include <stdlib.h>
 
 # define CLIENT_USLEEP 5
 # define MSG_SIGACT_FAILED "sigaction setting failed"
@@ -17,5 +18,11 @@
 # define CLR_RESET "\033[0m"
 
 uint64_t	g_client_strlen;
+
+int		ft_atoi(const char *str);
+size_t	ft_strlen(const char *s);
+void	ft_putnbr_fd(int n, int fd);
+void	ft_putstr_fd(char *s, int fd);
+void	ft_putendl_fd(char *s, int fd);
 
 #endif

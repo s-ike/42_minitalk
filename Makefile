@@ -1,16 +1,12 @@
 NAME		:= minitalk
 
 SERVER_NAME	:= server
-SERVER_SRCS	:= server.c
+SERVER_SRCS	:= server.c utils.c
 SERVER_OBJS	:= $(SERVER_SRCS:.c=.o)
 
 CLIENT_NAME	:= client
-CLIENT_SRCS	:= client.c
+CLIENT_SRCS	:= client.c utils.c
 CLIENT_OBJS	:= $(CLIENT_SRCS:.c=.o)
-
-LIBDIR		:= ./libft
-LIBPATH		:= $(LIBDIR)/libft.a
-LFLAGS		:= -L${LIBDIR} -lft -lcurses
 
 CC			:= gcc
 CFLAGS		:= -Wall -Wextra -Werror
@@ -21,28 +17,20 @@ C_GREEN		:= "\x1b[32m"
 
 all:		$(NAME)
 
-$(NAME):	server client
+$(NAME):	$(SERVER_NAME) $(CLIENT_NAME)
 			@echo $(C_GREEN)"=== Make Done ==="
 
-$(LIBPATH):
-			$(MAKE) -C $(LIBDIR)
+$(SERVER_NAME):	$(SERVER_OBJS)
+			$(CC) $(CFLAGS) $(DEBUG) $^  -o $@
 
-server:		$(SERVER_OBJS) $(LIBPATH)
-			$(CC) $(CFLAGS) $(SERVER_OBJS) $(DEBUG) $(LFLAGS) -o $(SERVER_NAME)
-
-client:		$(CLIENT_OBJS) $(LIBPATH)
-			$(CC) $(CFLAGS) $(CLIENT_OBJS) $(DEBUG) $(LFLAGS) -o $(CLIENT_NAME)
-
-init:		## git clone --recursive https://this_repository
-			git submodule update --init
+$(CLIENT_NAME):	$(CLIENT_OBJS)
+			$(CC) $(CFLAGS) $(DEBUG) $^ -o $@
 
 clean:
 			$(RM) $(SERVER_OBJS) $(CLIENT_OBJS)
-			$(MAKE) clean -C $(LIBDIR)
 
 fclean:		clean
 			$(RM) $(SERVER_NAME) $(CLIENT_NAME)
-			$(MAKE) fclean -C $(LIBDIR)
 
 re:			fclean $(NAME)
 

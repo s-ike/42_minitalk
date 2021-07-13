@@ -4,14 +4,14 @@ static int	is_pid_format(const char *s)
 {
 	if (!s || *s == '\0')
 		return (false);
-	if (!ft_isdigit(*s))
+	if (!('0' <= *s && *s <= '9'))
 		return (false);
 	if (*s == '0')
 		return (false);
 	s++;
 	while (*s)
 	{
-		if (!ft_isdigit(*s))
+		if (!('0' <= *s && *s <= '9'))
 			return (false);
 		s++;
 	}
