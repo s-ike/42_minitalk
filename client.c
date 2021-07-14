@@ -18,18 +18,6 @@ static int	is_pid_format(const char *s)
 	return (true);
 }
 
-static int	validate_args(int argc, char **argv)
-{
-	if (argc != 3)
-		return (false);
-	if (!is_pid_format(argv[1]))
-		return (false);
-	g_client_strlen = ft_strlen(argv[2]);
-	if (g_client_strlen == 0)
-		return (false);
-	return (true);
-}
-
 static int	send_str(pid_t pid, const char *s)
 {
 	const int		signals[] = {SIGUSR2, SIGUSR1};
@@ -99,11 +87,12 @@ int	main(int argc, char **argv)
 		ft_putendl_fd(MSG_SIGACT_FAILED, STDERR_FILENO);
 		exit(EXIT_FAILURE);
 	}
-	if (!validate_args(argc, argv))
+	if (argc != 3 || !is_pid_format(argv[1]))
 	{
 		ft_putendl_fd(MSG_EINVAL, STDERR_FILENO);
 		exit(EXIT_FAILURE);
 	}
+	g_client_strlen = ft_strlen(argv[2]);
 	if (send_str(ft_atoi(argv[1]), argv[2]) == false)
 	{
 		ft_putendl_fd(MSG_KILL_FAILED, STDERR_FILENO);
