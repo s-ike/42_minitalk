@@ -50,11 +50,8 @@ int	main(void)
 	struct sigaction	act;
 
 	put_pid(getpid(), true);
-	// act.sa_handler ではなくて良いのか -> infoをとるためにsa_sigaction
 	act.sa_sigaction = signal_handler;
-	// シグナルマスク(ブロックするシグナルの集合)を初期化(全てのシグナルを除外)
 	sigemptyset(&act.sa_mask);
-	// sa_flagsにSA_SIGINFOを指定しsignalに関する詳細な情報siginfo_tを受け取る
 	act.sa_flags = SA_SIGINFO;
 	if (sigaction(SIGUSR1, &act, NULL) < 0
 		|| sigaction(SIGUSR2, &act, NULL) < 0)
