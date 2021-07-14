@@ -1,12 +1,17 @@
 #include "minitalk.h"
 
+static void	put_colored_endl_fd(char *s, char *color, int fd)
+{
+	ft_putstr_fd(color, fd);
+	ft_putstr_fd(s, fd);
+	ft_putendl_fd(CLR_RESET, fd);
+}
+
 static int	is_pid_format(const char *s)
 {
 	if (!s || *s == '\0')
 		return (false);
-	if (!('0' <= *s && *s <= '9'))
-		return (false);
-	if (*s == '0')
+	if (!('1' <= *s && *s <= '9'))
 		return (false);
 	s++;
 	while (*s)
@@ -61,16 +66,9 @@ static void	signal_handler(int signo)
 	{
 		write(STDOUT_FILENO, "\n", 1);
 		if ((g_client_strlen + 1ULL) * 8ULL == cnt)
-		{
-			ft_putstr_fd(CLR_GREEN, STDOUT_FILENO);
-			ft_putendl_fd("SUCCESS", STDOUT_FILENO);
-		}
+			put_colored_endl_fd("SUCESS", CLR_GREEN, STDOUT_FILENO);
 		else
-		{
-			ft_putstr_fd(CLR_RED, STDOUT_FILENO);
-			ft_putendl_fd("FAILED", STDOUT_FILENO);
-		}
-		ft_putstr_fd(CLR_RESET, STDOUT_FILENO);
+			put_colored_endl_fd("FAILED", CLR_RED, STDOUT_FILENO);
 		exit(EXIT_SUCCESS);
 	}
 }
@@ -84,18 +82,18 @@ int	main(int argc, char **argv)
 	if (sigaction(SIGUSR1, &act, NULL) < 0
 		|| sigaction(SIGUSR2, &act, NULL) < 0)
 	{
-		ft_putendl_fd(MSG_SIGACT_FAILED, STDERR_FILENO);
+		put_colored_endl_fd(MSG_SIGACT_FAILED, CLR_RED, STDERR_FILENO);
 		exit(EXIT_FAILURE);
 	}
 	if (argc != 3 || !is_pid_format(argv[1]))
 	{
-		ft_putendl_fd(MSG_EINVAL, STDERR_FILENO);
+		put_colored_endl_fd(MSG_EINVAL, CLR_RED, STDERR_FILENO);
 		exit(EXIT_FAILURE);
 	}
 	g_client_strlen = ft_strlen(argv[2]);
 	if (send_str(ft_atoi(argv[1]), argv[2]) == false)
 	{
-		ft_putendl_fd(MSG_KILL_FAILED, STDERR_FILENO);
+		put_colored_endl_fd(MSG_KILL_FAILED, CLR_RED, STDERR_FILENO);
 		exit(EXIT_FAILURE);
 	}
 	while (1)
