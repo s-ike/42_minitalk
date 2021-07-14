@@ -6,7 +6,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 
-# define CLIENT_USLEEP 5
+# define CLIENT_USLEEP 10
 # define MSG_SIGACT_FAILED "sigaction setting failed"
 # define MSG_EINVAL "Invalid argument"
 # define MSG_KILL_FAILED "kill failed"
