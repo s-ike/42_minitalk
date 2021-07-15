@@ -14,11 +14,12 @@ DEBUG		:=
 
 RM			:= rm -f
 C_GREEN		:= "\x1b[32m"
+C_RESET		:= "\x1b[0m"
 
 all:		$(NAME)
 
 $(NAME):	$(SERVER_NAME) $(CLIENT_NAME)
-			@echo $(C_GREEN)"=== Make Done ==="
+			@echo $(C_GREEN)"=== Make Done ==="$(C_REST)
 
 $(SERVER_NAME):	$(SERVER_OBJS)
 			$(CC) $(CFLAGS) $(DEBUG) $^  -o $@
@@ -34,4 +35,6 @@ fclean:		clean
 
 re:			fclean $(NAME)
 
-.PHONY:		all clean fclean re init
+bonus:		$(NAME)
+
+.PHONY:		all clean fclean re bonus
