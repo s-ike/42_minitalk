@@ -28,24 +28,24 @@ static int	send_str(pid_t pid, const char *s)
 	const int		signals[] = {SIGUSR2, SIGUSR1};
 	static char		*save_s;
 	static pid_t	save_p = 0;
-	static int		i = 7;
+	static int		i = BIT_PER_CHAR;
 
 	if (s)
 	{
 		save_s = (char *)s;
 		save_p = pid;
 	}
-	if (0 <= i)
+	if (0 < i)
 	{
 		usleep(CLIENT_USLEEP);
-		if (kill(save_p, signals[!!(*save_s & (1 << i--))]) == -1)
+		if (kill(save_p, signals[!!(*save_s & (1 << --i))]) == -1)
 			return (false);
 	}
-	if (i < 0)
+	if (i <= 0)
 	{
 		if (*save_s == '\0')
 			return (true);
-		i = 7;
+		i = BIT_PER_CHAR;
 		save_s++;
 	}
 	return (true);
