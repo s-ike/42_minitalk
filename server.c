@@ -20,19 +20,19 @@ static void	put_pid(pid_t pid, bool is_server)
 static void	signal_handler(int signo, siginfo_t *info, void *context)
 {
 	static unsigned char	c = 0;
-	static int				i = 7;
+	static int				i = BIT_PER_CHAR;
 	static pid_t			pid = 0;
 
 	(void)context;
-	c |= ((signo == SIGUSR1) << i);
+	c |= ((signo == SIGUSR1) << --i);
 	if (pid != info->si_pid)
 	{
 		pid = info->si_pid;
 		put_pid(pid, false);
 	}
-	if (--i == -1)
+	if (i == 0)
 	{
-		i = 7;
+		i = BIT_PER_CHAR;
 		if (c == '\0')
 		{
 			write(STDOUT_FILENO, "\n", 1);

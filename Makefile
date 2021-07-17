@@ -23,7 +23,7 @@ $(NAME):	$(SERVER_NAME) $(CLIENT_NAME)
 			@echo $(C_GREEN)"=== Make Done ==="$(C_DEFAULT)$(C_REST)
 
 $(SERVER_NAME):	$(SERVER_OBJS)
-			$(CC) $(CFLAGS) $(DEBUG) $^  -o $@
+			$(CC) $(CFLAGS) $(DEBUG) $^ -o $@
 
 $(CLIENT_NAME):	$(CLIENT_OBJS)
 			$(CC) $(CFLAGS) $(DEBUG) $^ -o $@
